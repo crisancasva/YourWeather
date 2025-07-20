@@ -14,7 +14,7 @@ public class ViewHistory extends JFrame{
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        String[] columnas = {"Ciudad", "Temperatura (°C)", "Humedad (%)", "Fecha"};
+        String[] columnas = {"Pais","Ciudad", "Temperatura (°C)", "Humedad (%)", "Fecha"};
         tablaModel = new DefaultTableModel(columnas, 0);
         tablaHistorial = new JTable(tablaModel);
 

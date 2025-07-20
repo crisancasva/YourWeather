@@ -26,7 +26,7 @@ public class ModelApp {
 
         in.close();
         con.disconnect();
-        System.out.println(content.toString());
+
         return new JSONObject(content.toString());
     }
 }

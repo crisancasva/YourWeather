@@ -32,14 +32,19 @@ public class ControllerApp {
 
                 try {
                     JSONObject clima = model.obtenerClima(ciudad);
+
+                    String pais = clima.getJSONObject("sys").getString("country");
+                    String ciudadObtenida = clima.getString("name");
                     double temperatura = clima.getJSONObject("main").getDouble("temp");
                     int humedad = clima.getJSONObject("main").getInt("humidity");
 
+                    view.paisLabel.setText("Pais: " + pais);
+                    view.ciudadLabel.setText("Ciudad: " + ciudadObtenida);
                     view.temperaturaLabel.setText("Temperatura: " + temperatura + " °C");
                     view.humedadLabel.setText("Humedad: " + humedad + " %");
 
                     // Guardar en MongoDB
-                    repo.guardarConsulta(ciudad, temperatura, humedad);
+                    repo.guardarConsulta(clima);
 
                 } catch (Exception ex) {
                     view.temperaturaLabel.setText("Temperatura: error");
@@ -56,12 +61,16 @@ public class ControllerApp {
                 ViewHistory viewHistory = new ViewHistory();
 
                 for (Document doc : repo.obtenerHistorial()) {
-                    String ciudad = doc.getString("ciudad");
-                    Double temperatura = doc.getDouble("temperatura");
-                    Integer humedad = doc.getInteger("humedad");
+                    Document sys = (Document) doc.get("sys");
+                    String pais = sys.getString("country");
+                    String ciudad = doc.getString("name");
+                    Document main = (Document) doc.get("main");
+                    Number tempRaw = main.get("temp", Number.class);
+                    Double temperatura = tempRaw != null ? tempRaw.doubleValue() : null;
+                    Integer humedad = main.getInteger("humidity");
                     String fecha = doc.getString("fecha");
 
-                    Object[] fila = {ciudad, temperatura, humedad, fecha};
+                    Object[] fila = {pais, ciudad, temperatura, humedad, fecha};
                     viewHistory.tablaModel.addRow(fila);
                 }
 
